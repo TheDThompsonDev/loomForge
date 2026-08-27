@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Pipeline</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Meeting Pipeline</h1>
+  <div class="tabs">
+    <button id="tab-new" class="tab active">New meeting</button>
+    <button id="tab-drift" class="tab">Drift Gallery</button>
+  </div>
+
+  <!-- ── Tab 1: submit a meeting ─────────────────────────────────── -->
+  <section id="panel-new">
+    <p class="sub">
+      Paste a transcript (or a Loom link), and the pipeline extracts decisions and action items,
+      checks every item against the transcript for receipts, and creates Jira tickets for human
+      review. Optionally it also writes a strategy document to Confluence — a synthesis, not minutes.
+    </p>
+    <form id="meeting-form" class="form">
+      <div class="row">
+        <label>Meeting title
+          <input id="f-title" type="text" placeholder="Weekly platform sync" required>
+        </label>
+        <label>Attendees <span class="hint">(comma-separated)</span>
+          <input id="f-attendees" type="text" placeholder="Danny, Sarah, Marcus">
+        </label>
+      </div>
+      <label>Loom URL <span class="hint">(optional — links tickets to the recording; can fetch the transcript if enabled)</span>
+        <input id="f-loom" type="url" placeholder="https://www.loom.com/share/…">
+      </label>
+      <label>Transcript
+        <textarea id="f-transcript" rows="10" placeholder="Paste the meeting transcript here — or leave empty to fetch it from the Loom URL above (if transcript fetch is enabled)"></textarea>
+      </label>
+      <label class="check">
+        <input id="f-doc" type="checkbox">
+        Also write a strategy document to Confluence (executive summary, decisions with dissent, risks, action plan, explicitly-deferred items)
+      </label>
+      <div class="actions">
+        <button type="submit" id="f-submit">Run the pipeline</button>
+        <button type="button" id="f-fixture" class="ghost">Load sample transcript</button>
+      </div>
+    </form>
+    <div id="form-err" class="err"></div>
+    <div id="timeline"></div>
+  </section>
+
+  <!-- ── Tab 2: drift gallery ────────────────────────────────────── -->
+  <section id="panel-drift" hidden>
+    <p class="sub">
+      Same transcript, same model. <strong>Naked</strong> runs get one generic prompt and no
+      guardrails. <strong>Shelled</strong> runs go through the pipeline: strict prompt, schema gate,
+      verbatim-evidence check. Each dot is one run; height is how many tickets it decided to create.
+    </p>
+    <div id="sessions" class="sessions"></div>
+    <div id="status" class="pending"></div>
+    <div id="out"></div>
+  </section>
+
+  <script src="bundle.js"></script>
+</body>
+</html>

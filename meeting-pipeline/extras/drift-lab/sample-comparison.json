@@ -1,0 +1,1230 @@
+{
+  "session": {
+    "id": "drift-sample-0000000000-demo",
+    "meetingTitle": "trap-meeting (drift) — SAMPLE DATA",
+    "attendees": [
+      "Danny",
+      "Alex",
+      "Sam"
+    ],
+    "createdAt": "2026-08-26T14:00:00.000Z",
+    "naked_requested": 20,
+    "shelled_requested": 3,
+    "naked_complete": 20,
+    "shelled_complete": 3,
+    "done": true
+  },
+  "naked": {
+    "runs": [
+      {
+        "index": 0,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:00.000Z",
+        "usage": {
+          "input_tokens": 905,
+          "output_tokens": 431,
+          "total_tokens": 1336
+        },
+        "latencyMs": 6728,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 5,
+          "item_summaries": [
+            "Set up log viewer cleanup project",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Scope the audit log CSV export before committing to an approach",
+            "Review vendor embedding API pricing for finance",
+            "Build Slack digest bot"
+          ],
+          "owners_assigned": 4,
+          "priorities_given": 3,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "owner",
+              "value": "Sam"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 1,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:01.000Z",
+        "usage": {
+          "input_tokens": 946,
+          "output_tokens": 646,
+          "total_tokens": 1592
+        },
+        "latencyMs": 6828,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 8,
+          "item_summaries": [
+            "Build Slack digest bot",
+            "Assign intern to admin dark mode project",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Review vendor embedding API pricing for finance",
+            "Schedule Meridian renewal preparation meeting",
+            "Set up log viewer cleanup project",
+            "Implement search ranking rewrite with new embedding model",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)"
+          ],
+          "owners_assigned": 5,
+          "priorities_given": 7,
+          "hallucinated_fields": [
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "due_date",
+              "value": "next sprint"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 2,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:02.000Z",
+        "usage": {
+          "input_tokens": 949,
+          "output_tokens": 724,
+          "total_tokens": 1673
+        },
+        "latencyMs": 7640,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 8,
+          "item_summaries": [
+            "Schedule Meridian renewal preparation meeting",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Scope the audit log CSV export before committing to an approach",
+            "Build Slack digest bot",
+            "Assign intern to admin dark mode project",
+            "Review vendor embedding API pricing for finance",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Implement search ranking rewrite with new embedding model"
+          ],
+          "owners_assigned": 7,
+          "priorities_given": 7,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 3,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:03.000Z",
+        "usage": {
+          "input_tokens": 912,
+          "output_tokens": 807,
+          "total_tokens": 1719
+        },
+        "latencyMs": 4025,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 5,
+          "item_summaries": [
+            "Implement search ranking rewrite with new embedding model",
+            "Build Slack digest bot",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Review vendor embedding API pricing for finance",
+            "Schedule Meridian renewal preparation meeting"
+          ],
+          "owners_assigned": 3,
+          "priorities_given": 4,
+          "hallucinated_fields": [
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "due_date",
+              "value": "end of quarter"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 4,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:04.000Z",
+        "usage": {
+          "input_tokens": 906,
+          "output_tokens": 749,
+          "total_tokens": 1655
+        },
+        "latencyMs": 6425,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 8,
+          "item_summaries": [
+            "Build Slack digest bot",
+            "Schedule Meridian renewal preparation meeting",
+            "Implement search ranking rewrite with new embedding model",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Scope the audit log CSV export before committing to an approach",
+            "Assign intern to admin dark mode project",
+            "Set up log viewer cleanup project",
+            "Build streaming CSV export for audit log before Q3 renewal"
+          ],
+          "owners_assigned": 4,
+          "priorities_given": 3,
+          "hallucinated_fields": [
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "due_date",
+              "value": "end of quarter"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 5,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:05.000Z",
+        "usage": {
+          "input_tokens": 924,
+          "output_tokens": 760,
+          "total_tokens": 1684
+        },
+        "latencyMs": 7558,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 7,
+          "item_summaries": [
+            "Implement search ranking rewrite with new embedding model",
+            "Scope the audit log CSV export before committing to an approach",
+            "Build Slack digest bot",
+            "Assign intern to admin dark mode project",
+            "Set up log viewer cleanup project",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Schedule Meridian renewal preparation meeting"
+          ],
+          "owners_assigned": 4,
+          "priorities_given": 4,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 6,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:06.000Z",
+        "usage": {
+          "input_tokens": 947,
+          "output_tokens": 509,
+          "total_tokens": 1456
+        },
+        "latencyMs": 5724,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 7,
+          "item_summaries": [
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Schedule Meridian renewal preparation meeting",
+            "Set up log viewer cleanup project",
+            "Review vendor embedding API pricing for finance",
+            "Scope the audit log CSV export before committing to an approach",
+            "Assign intern to admin dark mode project",
+            "Implement search ranking rewrite with new embedding model"
+          ],
+          "owners_assigned": 6,
+          "priorities_given": 5,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 7,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:07.000Z",
+        "usage": {
+          "input_tokens": 930,
+          "output_tokens": 515,
+          "total_tokens": 1445
+        },
+        "latencyMs": 4601,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 5,
+          "item_summaries": [
+            "Assign intern to admin dark mode project",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Scope the audit log CSV export before committing to an approach",
+            "Schedule Meridian renewal preparation meeting",
+            "Implement search ranking rewrite with new embedding model"
+          ],
+          "owners_assigned": 3,
+          "priorities_given": 2,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "owner",
+              "value": "Sam"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 8,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:08.000Z",
+        "usage": {
+          "input_tokens": 919,
+          "output_tokens": 392,
+          "total_tokens": 1311
+        },
+        "latencyMs": 4697,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 4,
+          "item_summaries": [
+            "Build Slack digest bot",
+            "Review vendor embedding API pricing for finance",
+            "Scope the audit log CSV export before committing to an approach",
+            "Assign intern to admin dark mode project"
+          ],
+          "owners_assigned": 2,
+          "priorities_given": 2,
+          "hallucinated_fields": [
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "due_date",
+              "value": "next sprint"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 9,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:09.000Z",
+        "usage": {
+          "input_tokens": 919,
+          "output_tokens": 641,
+          "total_tokens": 1560
+        },
+        "latencyMs": 4472,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 4,
+          "item_summaries": [
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Review vendor embedding API pricing for finance",
+            "Schedule Meridian renewal preparation meeting"
+          ],
+          "owners_assigned": 1,
+          "priorities_given": 2,
+          "hallucinated_fields": [
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "due_date",
+              "value": "end of quarter"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 10,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:10.000Z",
+        "usage": {
+          "input_tokens": 950,
+          "output_tokens": 749,
+          "total_tokens": 1699
+        },
+        "latencyMs": 5902,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 3,
+          "item_summaries": [
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Set up log viewer cleanup project",
+            "Build Slack digest bot"
+          ],
+          "owners_assigned": 2,
+          "priorities_given": 1,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Sam"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "due_date",
+              "value": "end of quarter"
+            },
+            {
+              "field": "due_date",
+              "value": "end of quarter"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 11,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:11.000Z",
+        "usage": {
+          "input_tokens": 901,
+          "output_tokens": 445,
+          "total_tokens": 1346
+        },
+        "latencyMs": 4270,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 7,
+          "item_summaries": [
+            "Review vendor embedding API pricing for finance",
+            "Assign intern to admin dark mode project",
+            "Build Slack digest bot",
+            "Set up log viewer cleanup project",
+            "Implement search ranking rewrite with new embedding model",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Schedule Meridian renewal preparation meeting"
+          ],
+          "owners_assigned": 6,
+          "priorities_given": 7,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Sam"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "due_date",
+              "value": "next sprint"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "owner",
+              "value": "Sam"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "due_date",
+              "value": "next sprint"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 12,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:12.000Z",
+        "usage": {
+          "input_tokens": 954,
+          "output_tokens": 422,
+          "total_tokens": 1376
+        },
+        "latencyMs": 4419,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 7,
+          "item_summaries": [
+            "Set up log viewer cleanup project",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Scope the audit log CSV export before committing to an approach",
+            "Review vendor embedding API pricing for finance",
+            "Schedule Meridian renewal preparation meeting",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Implement search ranking rewrite with new embedding model"
+          ],
+          "owners_assigned": 5,
+          "priorities_given": 3,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "owner",
+              "value": "Danny"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 13,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:13.000Z",
+        "usage": {
+          "input_tokens": 942,
+          "output_tokens": 583,
+          "total_tokens": 1525
+        },
+        "latencyMs": 7270,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 4,
+          "item_summaries": [
+            "Assign intern to admin dark mode project",
+            "Scope the audit log CSV export before committing to an approach",
+            "Review vendor embedding API pricing for finance",
+            "Implement search ranking rewrite with new embedding model"
+          ],
+          "owners_assigned": 1,
+          "priorities_given": 4,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "due_date",
+              "value": "next sprint"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 14,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:14.000Z",
+        "usage": {
+          "input_tokens": 937,
+          "output_tokens": 782,
+          "total_tokens": 1719
+        },
+        "latencyMs": 6545,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 3,
+          "item_summaries": [
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Schedule Meridian renewal preparation meeting",
+            "Review vendor embedding API pricing for finance"
+          ],
+          "owners_assigned": 3,
+          "priorities_given": 2,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 15,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:15.000Z",
+        "usage": {
+          "input_tokens": 958,
+          "output_tokens": 584,
+          "total_tokens": 1542
+        },
+        "latencyMs": 3468,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 3,
+          "item_summaries": [
+            "Build Slack digest bot",
+            "Assign intern to admin dark mode project",
+            "Implement search ranking rewrite with new embedding model"
+          ],
+          "owners_assigned": 1,
+          "priorities_given": 3,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Jordan"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 16,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:16.000Z",
+        "usage": {
+          "input_tokens": 952,
+          "output_tokens": 603,
+          "total_tokens": 1555
+        },
+        "latencyMs": 3252,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 8,
+          "item_summaries": [
+            "Build Slack digest bot",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Set up log viewer cleanup project",
+            "Schedule Meridian renewal preparation meeting",
+            "Scope the audit log CSV export before committing to an approach",
+            "Review vendor embedding API pricing for finance",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Assign intern to admin dark mode project"
+          ],
+          "owners_assigned": 4,
+          "priorities_given": 4,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "owner",
+              "value": "Sam"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 17,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:17.000Z",
+        "usage": {
+          "input_tokens": 934,
+          "output_tokens": 672,
+          "total_tokens": 1606
+        },
+        "latencyMs": 5465,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 5,
+          "item_summaries": [
+            "Assign intern to admin dark mode project",
+            "Build Slack digest bot",
+            "Build streaming CSV export for audit log before Q3 renewal",
+            "Set up log viewer cleanup project",
+            "Implement search ranking rewrite with new embedding model"
+          ],
+          "owners_assigned": 3,
+          "priorities_given": 2,
+          "hallucinated_fields": [
+            {
+              "field": "priority",
+              "value": "high"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "due_date",
+              "value": "next sprint"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 18,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:18.000Z",
+        "usage": {
+          "input_tokens": 916,
+          "output_tokens": 407,
+          "total_tokens": 1323
+        },
+        "latencyMs": 5979,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 4,
+          "item_summaries": [
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Build Slack digest bot",
+            "Review vendor embedding API pricing for finance",
+            "Set up log viewer cleanup project"
+          ],
+          "owners_assigned": 2,
+          "priorities_given": 1,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      },
+      {
+        "index": 19,
+        "mode": "naked",
+        "startedAt": "2026-08-26T14:00:19.000Z",
+        "usage": {
+          "input_tokens": 949,
+          "output_tokens": 359,
+          "total_tokens": 1308
+        },
+        "latencyMs": 7155,
+        "model": "claude-sonnet-5",
+        "metrics": {
+          "action_item_count": 3,
+          "item_summaries": [
+            "Implement search ranking rewrite with new embedding model",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)",
+            "Build Slack digest bot"
+          ],
+          "owners_assigned": 2,
+          "priorities_given": 2,
+          "hallucinated_fields": [
+            {
+              "field": "owner",
+              "value": "the intern"
+            },
+            {
+              "field": "priority",
+              "value": "highest"
+            },
+            {
+              "field": "owner",
+              "value": "Alex"
+            },
+            {
+              "field": "priority",
+              "value": "medium"
+            },
+            {
+              "field": "due_date",
+              "value": "before Q3 renewal"
+            }
+          ],
+          "parse_method": "heuristic"
+        }
+      }
+    ],
+    "set_metrics": {
+      "runs": 20,
+      "item_count_min": 3,
+      "item_count_max": 8,
+      "item_count_mean": 5.4,
+      "item_count_stddev": 1.85,
+      "distinct_ticket_sets": 20,
+      "total_owners_assigned": 68,
+      "total_priorities_given": 68,
+      "total_hallucinated_fields": 137
+    },
+    "total_usage": {
+      "input_tokens": 18650,
+      "output_tokens": 11780,
+      "total_tokens": 30430,
+      "total_latency_ms": 112423
+    }
+  },
+  "shelled": {
+    "runs": [
+      {
+        "index": 0,
+        "mode": "shelled",
+        "startedAt": "2026-08-26T14:05:00.000Z",
+        "usage": {
+          "input_tokens": 1450,
+          "output_tokens": 610,
+          "total_tokens": 2060
+        },
+        "latencyMs": 6100,
+        "model": "claude-sonnet-5",
+        "repaired": false,
+        "metrics": {
+          "action_item_count": 2,
+          "item_summaries": [
+            "Scope the audit log CSV export before committing to an approach",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)"
+          ],
+          "owners_assigned": 0,
+          "priorities_given": 0,
+          "hallucinated_fields": [],
+          "dropped_by_evidence_gate": 0,
+          "parse_method": "schema-validated"
+        }
+      },
+      {
+        "index": 1,
+        "mode": "shelled",
+        "startedAt": "2026-08-26T14:05:01.000Z",
+        "usage": {
+          "input_tokens": 1450,
+          "output_tokens": 611,
+          "total_tokens": 2061
+        },
+        "latencyMs": 6500,
+        "model": "claude-sonnet-5",
+        "repaired": false,
+        "metrics": {
+          "action_item_count": 2,
+          "item_summaries": [
+            "Scope the audit log CSV export before committing to an approach",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)"
+          ],
+          "owners_assigned": 0,
+          "priorities_given": 0,
+          "hallucinated_fields": [],
+          "dropped_by_evidence_gate": 1,
+          "parse_method": "schema-validated"
+        }
+      },
+      {
+        "index": 2,
+        "mode": "shelled",
+        "startedAt": "2026-08-26T14:05:02.000Z",
+        "usage": {
+          "input_tokens": 1450,
+          "output_tokens": 612,
+          "total_tokens": 2062
+        },
+        "latencyMs": 6900,
+        "model": "claude-sonnet-5",
+        "repaired": false,
+        "metrics": {
+          "action_item_count": 2,
+          "item_summaries": [
+            "Scope the audit log CSV export before committing to an approach",
+            "Add contract test suite on partner endpoints (unowned; blocks the search rewrite)"
+          ],
+          "owners_assigned": 0,
+          "priorities_given": 0,
+          "hallucinated_fields": [],
+          "dropped_by_evidence_gate": 0,
+          "parse_method": "schema-validated"
+        }
+      }
+    ],
+    "set_metrics": {
+      "runs": 3,
+      "item_count_min": 2,
+      "item_count_max": 2,
+      "item_count_mean": 2,
+      "item_count_stddev": 0,
+      "distinct_ticket_sets": 1,
+      "total_owners_assigned": 0,
+      "total_priorities_given": 0,
+      "total_hallucinated_fields": 0
+    },
+    "total_usage": {
+      "input_tokens": 4350,
+      "output_tokens": 1833,
+      "total_tokens": 6183,
+      "total_latency_ms": 19500
+    }
+  }
+}

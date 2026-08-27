@@ -1,0 +1,47 @@
+[Weekly platform sync, recorded via Loom]
+
+Danny: Alright, we're recording. Quick agenda: checkout latency, the mobile crash from Tuesday, and then Priya wants five minutes on the notification service. Go.
+
+Sarah: So checkout latency. p95 is at 4.2 seconds since we shipped the tax calculation change. It's the synchronous call to the tax vendor. I profiled it yesterday...
+
+Marcus: Sorry, is that the same thing that's spiking the error budget? Because I'm seeing timeouts in the payment worker too.
+
+Sarah: Different thing, but related. The payment worker timeouts are downstream of the same vendor call. If we cache the tax rates per region we fix both.
+
+Danny: How long to build the cache?
+
+Sarah: Two, three days? I need to check how often rates actually change. If it's quarterly, this is easy.
+
+Danny: Okay, Sarah takes the tax rate caching. That's priority one, customers are feeling this one. Let's get it in review by Friday.
+
+Sarah: Fine, but someone needs to own the vendor contract question long-term. We're paying per-call pricing and hammering them.
+
+Danny: Park that, that's a procurement conversation. Okay, mobile crash. Marcus?
+
+Marcus: Tuesday's release crashed on Android 13 when users rotate the screen during checkout. It's the state restoration bug we thought we fixed in 4.1. I can repro it locally now, which is new. Honestly it's a one-liner once you see it... the saved instance state is getting cleared by the new navigation library.
+
+Danny: Do we hotfix or wait for the next release train?
+
+Marcus: Hotfix. It's crashing about eight hundred sessions a day.
+
+Priya: Wait, before you hotfix... my notification changes are on that same branch. If you cut a hotfix from release-4.2 you'll ship half my migration.
+
+Marcus: Ugh. Okay, I'll cherry-pick onto a clean branch off the last tag instead.
+
+Danny: So Marcus hotfixes the rotation crash off the 4.1 tag, cherry-picked, not from the release branch. Ship it as soon as QA signs off. Priya, you were saying... notification service.
+
+Priya: Two things. First, the migration to the new push provider is done for iOS, Android is half done. I need someone from Marcus's team for the Android registration flow, maybe two days of pairing.
+
+Marcus: Jake can pair with you next week. He knows that code.
+
+Priya: Great. Second thing... and Danny I know you disagree... I still think we should batch the marketing notifications. We sent four pushes in one hour last Thursday and opt-outs doubled that day.
+
+Danny: I don't disagree that it's a problem, I disagree that engineering should solve it. It's a marketing calendar problem.
+
+Priya: The calendar won't save us when two campaigns collide. A server-side rate limit is a day of work.
+
+Danny: ...Fine. Do the rate limit, but cap the scope: max pushes per user per day, config value, no UI. If marketing wants a dashboard they can fund it next quarter.
+
+Priya: Deal. I'll write it up.
+
+Danny: Decisions on record: tax caching is P1 with Sarah, Marcus hotfixes the rotation crash from the 4.1 tag, Jake pairs with Priya on Android push registration next week, and Priya builds a server-side notification rate limit, deliberately scoped down. I want to note I still think the rate limit is treating a symptom. Anything else? No? Done. Stopping the recording.

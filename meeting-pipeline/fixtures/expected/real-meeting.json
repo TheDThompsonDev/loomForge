@@ -1,0 +1,70 @@
+{
+  "meeting_id": "fixture-real-meeting",
+  "decisions": [
+    {
+      "text": "Tax rate caching is priority one, owned by Sarah, in review by Friday",
+      "made_by": "Danny",
+      "dissent": null
+    },
+    {
+      "text": "Hotfix the Android rotation crash, cherry-picked off the 4.1 tag rather than the release-4.2 branch",
+      "made_by": "Danny",
+      "dissent": null
+    },
+    {
+      "text": "Build a server-side notification rate limit with deliberately capped scope (config value, no UI)",
+      "made_by": "Danny",
+      "dissent": "Danny notes he still thinks the rate limit is treating a symptom and it is really a marketing calendar problem"
+    }
+  ],
+  "action_items": [
+    {
+      "summary": "Cache tax rates per region to fix checkout latency and payment worker timeouts",
+      "description": "p95 checkout latency is at 4.2 seconds since the tax calculation change shipped, caused by the synchronous call to the tax vendor. The payment worker timeouts are downstream of the same vendor call. Caching tax rates per region fixes both. Sarah estimates two to three days, pending how often rates change.",
+      "evidence_quote": "If we cache the tax rates per region we fix both.",
+      "suggested_owner": "Sarah",
+      "priority": "highest",
+      "acceptance_criteria": [
+        "Tax rates cached per region",
+        "In review by Friday",
+        "p95 checkout latency and payment worker timeouts both improve"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "summary": "Hotfix Android 13 rotation crash during checkout, cherry-picked from the 4.1 tag",
+      "description": "Tuesday's release crashes on Android 13 when users rotate the screen during checkout... the saved instance state is cleared by the new navigation library. About eight hundred sessions a day are crashing. Must be cut from the last 4.1 tag, not release-4.2, to avoid shipping Priya's half-done notification migration.",
+      "evidence_quote": "So Marcus hotfixes the rotation crash off the 4.1 tag, cherry-picked, not from the release branch.",
+      "suggested_owner": "Marcus",
+      "priority": "high",
+      "acceptance_criteria": [
+        "Crash no longer reproduces on Android 13 rotation during checkout",
+        "Hotfix branch is cut from the 4.1 tag",
+        "Ships as soon as QA signs off"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "summary": "Pair with Priya on Android push registration flow for the provider migration",
+      "description": "The push provider migration is done for iOS and half done for Android. Priya needs someone from the mobile team for the Android registration flow, roughly two days of pairing. Marcus volunteered Jake for next week.",
+      "evidence_quote": "Jake can pair with you next week. He knows that code.",
+      "suggested_owner": "Jake",
+      "priority": null,
+      "acceptance_criteria": ["Android push registration flow migrated to the new provider"],
+      "confidence": 0.85
+    },
+    {
+      "summary": "Build server-side notification rate limit: max pushes per user per day, config value, no UI",
+      "description": "Four marketing pushes went out in one hour last Thursday and opt-outs doubled. Scope is deliberately capped: a per-user daily push cap as a config value, no dashboard or UI. Priya will write it up.",
+      "evidence_quote": "Do the rate limit, but cap the scope: max pushes per user per day, config value, no UI.",
+      "suggested_owner": "Priya",
+      "priority": null,
+      "acceptance_criteria": [
+        "Server-side cap on pushes per user per day",
+        "Cap is a config value",
+        "No UI included"
+      ],
+      "confidence": 0.9
+    }
+  ]
+}
