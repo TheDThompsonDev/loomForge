@@ -1,18 +1,10 @@
-# meeting-pipeline: advanced Forge workshop app.
-# The manifest is the contract: every capability the app has is declared
-# here, and nothing else. Each module below maps to a workshop concept
-# (see docs/WORKSHOP.md for the full concept-to-code map).
 modules:
-  # Concept 1: input capture from outside the products. A web trigger is
-  # the app's HTTP front door (auth is YOUR job; see src/ingestion/auth.js).
   webtrigger:
     - key: transcript-ingest
       function: ingest-handler
       response:
         type: dynamic
 
-  # Concept 2: async events. Accept fast, work later. The consumer is the
-  # pipeline worker; timeoutSeconds extends it past the 55s default.
   consumer:
     - key: pipeline-consumer
       queue: pipeline-queue
@@ -23,143 +15,91 @@ modules:
       handler: index.handleIngest
     - key: pipeline-worker
       handler: index.processPipelineJob
-      timeoutSeconds: 300 # up to 3 model calls + Jira/Confluence writes per job
-    - key: console-resolver
-      handler: index.consoleResolver
-    - key: action-submit-transcript
+      timeoutSeconds: 120
+    - key: fn-submit-transcript
       handler: actions.submitTranscript
     - key: action-get-job-status
       handler: actions.getJobStatus
 
-  # Concept 3: Forge LLMs. Atlassian-hosted Claude, invoked in-platform.
-  # This is why external.fetch is empty: the AI calls never leave Forge.
-  llm:
-    - key: pipeline-llm
-      model:
-        - claude
-
-  # Concept 4: a Rovo agent whose abilities are this app's actions. Ask it
-  # to process a meeting; it calls the same pipeline the web trigger uses.
   rovo:agent:
     - key: meeting-pipeline-agent
       name: Meeting Pipeline
-      description: Turns meeting transcripts into evidence-gated Jira tickets and Confluence strategy docs.
+      description: Captures an input, creates a Jira ticket, and can publish a
+        Confluence page so the work is tracked.
       prompt: >
-        You operate the meeting-pipeline app. When given a meeting
-        transcript (or a Loom URL), call submit-transcript to run the
-        pipeline; offer the strategy-doc option when the user wants a
-        Confluence write-up. Use get-job-status to report what a job
-        created. Never claim a ticket or page exists unless a tool result
-        says so. Tickets always land in the Review column for human
-        approval; always mention that.
+        You operate the meeting-pipeline app. When given an input (a meeting
+        note, a research request, or similar), call submit-transcript to run
+        the pipeline. Offer the Confluence option when the user wants a page
+        written. Use get-job-status to report what a job created. Never claim
+        a ticket or page exists unless a tool result says so. Tickets land in
+        Review for human approval; always mention that.
       conversationStarters:
-        - Turn this meeting transcript into Jira tickets
-        - Process this meeting and write a strategy doc
+        - Capture this as a Jira ticket
+        - Process this and write a Confluence page
         - What did my last pipeline job create?
       actions:
         - submit-transcript
         - get-job-status
   action:
     - key: submit-transcript
-      function: action-submit-transcript
+      function: fn-submit-transcript
       actionVerb: TRIGGER
-      name: Submit meeting transcript
+      name: Submit captured input
       description: >
-        Send a meeting transcript into the pipeline. Extraction and
-        enrichment are schema-gated; tickets land in the Review column for
-        human approval. Optionally also publishes a synthesized strategy
-        document to Confluence. Returns the pipeline job id.
+        Send captured input into the pipeline. A Jira ticket is created and
+        stored on the job. Optionally also publishes a Confluence page.
+        Returns the pipeline job id.
       inputs:
         transcript:
-          title: Transcript
+          title: Input
           type: string
           required: true
-          description: The full meeting transcript text.
+          description: The captured text (meeting notes, research request, or similar).
         meeting_title:
-          title: Meeting title
+          title: Title
           type: string
           required: true
-          description: Short title of the meeting.
+          description: Short title for the ticket.
         attendees:
           title: Attendees
           type: string
           required: false
-          description: Comma-separated attendee names.
+          description: Comma-separated names, if any.
         date:
           title: Date
           type: string
           required: false
-          description: Meeting date, ISO-8601.
-        loom_url:
-          title: Loom URL
-          type: string
-          required: false
-          description: Optional https://www.loom.com/share/... link to the recording.
+          description: Date, ISO-8601.
         generate_doc:
-          title: Generate strategy doc
+          title: Generate Confluence page
           type: string
           required: false
-          description: Pass "true" to also publish a synthesized strategy document to Confluence.
+          description: Pass "true" to also publish a Confluence page.
     - key: get-job-status
       function: action-get-job-status
       actionVerb: GET
       name: Get pipeline job status
       description: >
-        Check a pipeline job: current stage, tickets created, items rejected
-        by the evidence gate, and the Confluence page if one was written.
+        Check a pipeline job: current stage, the ticket created, and the
+        Confluence page if one was written.
       inputs:
         job_id:
           title: Job id
           type: string
           required: true
-          description: The job id returned by Submit meeting transcript.
-
-  # Concept 4b (Preview): the same actions exposed as MCP tools, so agents
-  # outside Rovo Studio chat can call them too.
-  rovo:mcp:
-    - key: meeting-pipeline-mcp
-      name: Meeting Pipeline Tools
-      tools:
-        - submit-transcript
-        - get-job-status
-
-  # Concept 5: Custom UI. The in-product console (form + live pipeline
-  # timeline), served from a static bundle, talking to backend functions
-  # through the resolver.
-  jira:globalPage:
-    - key: pipeline-console
-      title: Meeting Pipeline
-      resource: console-resource
-      resolver:
-        function: console-resolver
-      route: meeting-pipeline
-
-resources:
-  - key: console-resource
-    path: static/console # built by `npm run build:ui`
+          description: The job id returned by Submit captured input.
 
 app:
   runtime:
     name: nodejs24.x
     memoryMB: 512
     architecture: arm64
-  id: ari:cloud:ecosystem::app/REPLACE-AFTER-FORGE-REGISTER
+  id: ari:cloud:ecosystem::app/0068d5d7-649b-4ada-b4d3-8b2650b68fe7
 
 permissions:
   scopes:
-    - read:jira-work # dedupe search + enricher fallback
-    - write:jira-work # ticket creation (Concept 6: requestJira asApp)
-    - storage:app # job state + checkpoints (@forge/kvs)
-    - search:confluence # enricher fallback: related docs
-    - write:confluence-content # strategy doc publishing (Concept 7: requestConfluence)
-    # - read:graph:jira        # uncomment only if Teamwork Graph EAP access
-    #                          # is granted (see docs/TEAMWORK-GRAPH.md)
-  # Concept 8: external egress is opt-in and explicit. It is absent by
-  # default, so nothing leaves the platform. The one candidate is the unofficial Loom
-  # transcript fetch (docs/LOOM.md); uncommenting this is the deliberate,
-  # visible act of granting it:
-  # external:
-  #   fetch:
-  #     backend:
-  #       - address: www.loom.com
-  #       - address: "*.loom.com"
+    - read:jira-work
+    - write:jira-work 
+    - storage:app
+    - read:space:confluence
+    - write:page:confluence

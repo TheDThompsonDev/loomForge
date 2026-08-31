@@ -1,7 +1,5 @@
 const { LIMITS } = require("../config");
 
-// Step 3: deterministic payload validation. No AI anywhere near this.
-// Returns { ok: true, payload } or { ok: false, errors: [...] }.
 function validateIngestPayload(raw) {
   const errors = [];
 
@@ -18,10 +16,10 @@ function validateIngestPayload(raw) {
   const transcript = typeof body.transcript === "string" ? body.transcript.trim() : "";
   if (!transcript) {
     errors.push("transcript is required");
-  } else if (transcript.length < LIMITS.MIN_TRANSCRIPT_CHARS) {
-    errors.push(`transcript too short (min ${LIMITS.MIN_TRANSCRIPT_CHARS} chars)`);
-  } else if (transcript.length > LIMITS.MAX_TRANSCRIPT_CHARS) {
-    errors.push(`transcript too long (max ${LIMITS.MAX_TRANSCRIPT_CHARS} chars)`);
+  } else if (transcript.length < LIMITS.MIN_INPUT_CHARS) {
+    errors.push(`transcript too short (min ${LIMITS.MIN_INPUT_CHARS} chars)`);
+  } else if (transcript.length > LIMITS.MAX_INPUT_CHARS) {
+    errors.push(`transcript too long (max ${LIMITS.MAX_INPUT_CHARS} chars)`);
   }
 
   const meetingTitle =
@@ -54,27 +52,14 @@ function validateIngestPayload(raw) {
     }
   }
 
-  // Path A (Loom): optional link back to the source recording. Loom has no
-  // public transcript API (see docs/LOOM.md), so the transcript itself
-  // always arrives in the payload, the URL is for traceability.
-  let loomUrl = null;
-  if (body.loom_url != null) {
-    if (
-      typeof body.loom_url !== "string" ||
-      !/^https:\/\/(www\.)?loom\.com\/share\/[\w-]+/.test(body.loom_url.trim())
-    ) {
-      errors.push("loom_url must be a https://www.loom.com/share/... URL");
-    } else {
-      loomUrl = body.loom_url.trim();
-    }
-  }
-
   let generateDoc = false;
   if (body.generate_doc != null) {
-    if (typeof body.generate_doc !== "boolean") {
-      errors.push("generate_doc must be a boolean");
-    } else {
+    if (typeof body.generate_doc === "boolean") {
       generateDoc = body.generate_doc;
+    } else if (body.generate_doc === "true" || body.generate_doc === "false") {
+      generateDoc = body.generate_doc === "true";
+    } else {
+      errors.push("generate_doc must be a boolean");
     }
   }
 
@@ -82,7 +67,7 @@ function validateIngestPayload(raw) {
 
   return {
     ok: true,
-    payload: { transcript, meetingTitle, attendees, date, loomUrl, generateDoc },
+    payload: { transcript, meetingTitle, attendees, date, generateDoc },
   };
 }
 

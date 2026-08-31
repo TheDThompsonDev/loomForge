@@ -1,27 +1,16 @@
 {
   "name": "meeting-pipeline",
   "version": "1.0.0",
-  "description": "Meeting-to-Execution Pipeline: transcript in, reviewed Jira tickets and a Confluence strategy doc out. Advanced Forge workshop app.",
+  "description": "Workshop app: capture an input, create a Jira ticket, optionally write a Confluence page.",
   "main": "index.js",
   "license": "MIT",
   "private": true,
   "engines": {
     "node": ">=20"
   },
-  "scripts": {
-    "test": "node --test \"test/*.test.js\"",
-    "build:ui": "node scripts/build-ui.js",
-    "preview:console": "node scripts/build-console-preview.js"
-  },
   "dependencies": {
     "@forge/api": "^8.0.4",
-    "@forge/bridge": "^6.3.0",
     "@forge/events": "^3.0.4",
-    "@forge/kvs": "^2.0.4",
-    "@forge/llm": "^1.0.4",
-    "@forge/resolver": "^2.0.0"
-  },
-  "devDependencies": {
-    "esbuild": "^0.28.2"
+    "@forge/kvs": "^2.0.4"
   }
 }
