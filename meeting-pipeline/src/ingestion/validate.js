@@ -135,4 +135,13 @@ function parseItems(raw, meetingTitle, transcript) {
   return { ok: true, items };
 }
 
-module.exports = { validateIngestPayload };
+function needsLlmSplit(items, transcript) {
+  return (
+    Array.isArray(items) &&
+    items.length === 1 &&
+    items[0].route === "human" &&
+    items[0].detail === transcript
+  );
+}
+
+module.exports = { validateIngestPayload, parseItems, needsLlmSplit };

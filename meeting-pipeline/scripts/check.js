@@ -3,6 +3,8 @@ const { validateIngestPayload } = require("../src/ingestion/validate");
 const { parseIssueKey, adfToText, truncate } = require("../src/utils");
 const { parseAllowedUrl } = require("../src/pipeline/fetchSource");
 const { composePlanOfRecord, renderPlanOfRecord } = require("../src/pipeline/planOfRecord");
+const { extractJson } = require("../src/pipeline/llmText");
+const { needsLlmSplit } = require("../src/ingestion/validate");
 const sampleItems = require("../fixtures/work-items.json");
 
 function check(name, fn) {
@@ -121,6 +123,20 @@ check("composes a plan-of-record page from work items", () => {
   assert.ok(html.includes("Risks"));
   assert.ok(html.includes("ac:name=\"jira\""));
   assert.ok(html.includes("SMS-120"));
+});
+
+check("unwraps fenced LLM JSON", () => {
+  const raw = extractJson("```json\n[{\"summary\":\"Cache tax rates\"}]\n```");
+  assert.ok(raw.includes("Cache tax rates"));
+});
+
+check("detects the one-item bag that should be split", () => {
+  const transcript = "Sarah takes tax caching.";
+  assert.strictEqual(
+    needsLlmSplit([{ summary: "Weekly", detail: transcript, owner: "", route: "human" }], transcript),
+    true
+  );
+  assert.strictEqual(needsLlmSplit(sampleItems, transcript), false);
 });
 
 console.log("\nAll checks passed.");

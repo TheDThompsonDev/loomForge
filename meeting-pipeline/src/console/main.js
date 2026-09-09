@@ -2,6 +2,7 @@ import { invoke, router } from "@forge/bridge";
 
 const STAGES = [
   { key: "queued", name: "Queued", detail: "Job accepted, waiting for a worker (async events queue)" },
+  { key: "splitting", name: "Parse the meeting", detail: "Forge LLM splits notes into work items. Code still owns Jira." },
   { key: "creating-tickets", name: "Create Jira tickets", detail: "requestJira() puts tickets in the Review column for human approval" },
   { key: "writing-doc", name: "Write Confluence page", detail: "requestConfluence() publishes the plan of record with live Jira cards" },
   { key: "done", name: "Done", detail: "" },
@@ -10,7 +11,6 @@ const STAGES = [
 const form = document.getElementById("meeting-form");
 const formErr = document.getElementById("form-err");
 let pollTimer = null;
-let useSampleItems = false;
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -21,7 +21,6 @@ form.addEventListener("submit", async (e) => {
     meeting_title: document.getElementById("f-title").value.trim(),
     attendees: document.getElementById("f-attendees").value.split(",").map((a) => a.trim()).filter(Boolean),
     generate_doc: generateDoc,
-    use_sample_items: useSampleItems,
   };
 
   const submitBtn = document.getElementById("f-submit");
@@ -58,7 +57,6 @@ document.getElementById("f-fixture").addEventListener("click", () => {
     "Decisions on record: tax caching P1 with Sarah, Marcus hotfixes from the 4.1 tag, Jake pairs with Priya, " +
     "Priya builds the rate limit. I still think the rate limit treats a symptom, noting my dissent. Done.";
   document.getElementById("f-doc").checked = true;
-  useSampleItems = true;
   formErr.textContent = "";
 });
 

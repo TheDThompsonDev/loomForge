@@ -1,56 +1,16 @@
-modules:
-  llm:
-    - key: llm-app
-      model:
-        - claude
+# Paste under modules.function (the four action handlers).
+# Then paste rovo:agent, action, and permissions.external.fetch.backend
+# from this file. See Lab 6.
 
-  webtrigger:
-    - key: transcript-ingest
-      function: ingest-handler
-      response:
-        type: dynamic
-
-  consumer:
-    - key: pipeline-consumer
-      queue: pipeline-queue
-      function: pipeline-worker
-
-  jira:globalPage:
-    - key: pipeline-home
-      title: Meeting Pipeline
-      resource: console-resource
-      resolver:
-        function: fn-page
-      route: meeting-pipeline
-
-  trigger:
-    - key: agent-handoff
-      function: on-agent-handoff
-      events:
-        - avi:jira:updated:issue
-        - avi:jira:assigned:issue
-      filter:
-        ignoreSelf: true
-        expression: event.issue.fields?.labels?.includes("assign-to-agent") == true
-
-  function:
-    - key: ingest-handler
-      handler: index.handleIngest
-    - key: pipeline-worker
-      handler: index.processPipelineJob
-      timeoutSeconds: 120
-    - key: fn-submit-transcript
-      handler: actions.submitTranscript
-    - key: fn-get-job-status
-      handler: actions.getJobStatus
-    - key: fn-load-context
-      handler: actions.loadResearchContext
-    - key: fn-publish-research
-      handler: actions.publishResearchDoc
-    - key: on-agent-handoff
-      handler: index.onAgentHandoff
-    - key: fn-page
-      handler: resolvers/page.handler
+  # add these next to your other function entries:
+  # - key: fn-submit-transcript
+  #   handler: actions.submitTranscript
+  # - key: fn-get-job-status
+  #   handler: actions.getJobStatus
+  # - key: fn-load-context
+  #   handler: actions.loadResearchContext
+  # - key: fn-publish-research
+  #   handler: actions.publishResearchDoc
 
   rovo:agent:
     - key: meeting-pipeline-agent
@@ -62,14 +22,15 @@ modules:
 
         Capture: when given meeting notes, send them to submit-transcript.
         Do not invent a work-item array. The pipeline splits the notes with
-        Forge LLM. Set generate_doc true if they also want a Confluence page.
-        Tickets land in Review. Always say which ones are assign-to-agent.
-        Use get-job-status only to report what a job created.
+        Forge LLM. Set generate_doc true if they also want a Confluence
+        page. Tickets land in Review. Always say which ones are
+        assign-to-agent. Use get-job-status only to report what a job
+        created.
 
         Work a ticket: you are one assignable agent, not the only one.
         When asked to investigate a ticket, call load-research-context first.
         If the user gives a source URL, pass it so the action can fetch that
-        page — that fetch is a Forge capability. Synthesize findings, risks,
+        page. That fetch is a Forge capability. Synthesize findings, risks,
         and a recommendation. Never claim you fetched a URL unless the tool
         result includes it. When asked to publish, call publish-research.
         Never claim a page exists unless that tool result says so.
@@ -191,32 +152,15 @@ modules:
           required: false
           description: Optional URL to cite on the page.
 
-resources:
-  - key: console-resource
-    path: static/console
-
-app:
-  runtime:
-    name: nodejs24.x
-    memoryMB: 512
-    architecture: arm64
-  id: ari:cloud:ecosystem::app/0068d5d7-649b-4ada-b4d3-8b2650b68fe7
-
-permissions:
-  scopes:
-    - read:jira-work
-    - write:jira-work
-    - storage:app
-    - read:space:confluence
-    - write:page:confluence
-  external:
-    fetch:
-      backend:
-        - address: developer.atlassian.com
-          inScopeEUD: false
-        - address: support.atlassian.com
-          inScopeEUD: false
-        - address: en.wikipedia.org
-          inScopeEUD: false
-        - address: www.wikipedia.org
-          inScopeEUD: false
+# Under permissions:
+#   external:
+#     fetch:
+#       backend:
+#         - address: developer.atlassian.com
+#           inScopeEUD: false
+#         - address: support.atlassian.com
+#           inScopeEUD: false
+#         - address: en.wikipedia.org
+#           inScopeEUD: false
+#         - address: www.wikipedia.org
+#           inScopeEUD: false

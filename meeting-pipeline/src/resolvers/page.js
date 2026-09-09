@@ -2,7 +2,6 @@ const Resolver = require("@forge/resolver").default;
 const { validateIngestPayload } = require("../ingestion/validate");
 const { createPipelineJob } = require("../service");
 const storage = require("../storage");
-const sampleItems = require("../../fixtures/work-items.json");
 
 const resolver = new Resolver();
 
@@ -14,7 +13,7 @@ resolver.define("submitMeeting", async ({ payload }) => {
       attendees: payload.attendees,
       date: payload.date || new Date().toISOString().slice(0, 10),
       generate_doc: payload.generate_doc,
-      items: payload.use_sample_items ? sampleItems : payload.items,
+      items: payload.items,
     });
     if (!validation.ok) {
       return { ok: false, errors: validation.errors };
@@ -49,7 +48,7 @@ function summarizeJob(jobId, job) {
     updatedAt: job.updatedAt || "",
     generateDoc: Boolean(job.generateDoc),
     failedAt: job.failedAt || null,
-    error: job.error || null,
+    error: job.error || job.checkpoint?.splitError || null,
     tickets: (job.result?.tickets || []).map((ticket) => ({
       issueKey: ticket.issueKey,
       summary: ticket.summary,

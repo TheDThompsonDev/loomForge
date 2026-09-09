@@ -5,6 +5,8 @@ const { createMeetingPage } = require("./pipeline/createMeetingPage");
 const { commentIssue } = require("./pipeline/commentIssue");
 const { onAgentHandoff } = require("./pipeline/onAgentHandoff");
 const { createPipelineJob } = require("./service");
+const { splitMeeting } = require("./pipeline/splitMeeting");
+const { needsLlmSplit } = require("./ingestion/validate");
 const storage = require("./storage");
 
 exports.handleIngest = async (request) => {
@@ -43,7 +45,7 @@ exports.processPipelineJob = async (event) => {
     date: job.date,
     transcript: job.transcript,
   };
-  const items = job.items || [];
+  let items = job.items || [];
   const checkpoint = job.checkpoint || {};
   checkpoint.createdKeys = checkpoint.createdKeys || {};
 
@@ -61,6 +63,23 @@ exports.processPipelineJob = async (event) => {
   };
 
   try {
+    if (!checkpoint.splitDone && needsLlmSplit(items, meeting.transcript)) {
+      await save("splitting");
+      const split = await splitMeeting({
+        meetingTitle: meeting.meetingTitle,
+        attendees: meeting.attendees,
+        transcript: meeting.transcript,
+      });
+      if (split.ok) {
+        items = split.items;
+        job.items = items;
+      } else {
+        checkpoint.splitError = split.error;
+      }
+      checkpoint.splitDone = true;
+      await save("splitting");
+    }
+
     await save("creating-tickets");
     const tickets = [];
     for (let index = 0; index < items.length; index += 1) {

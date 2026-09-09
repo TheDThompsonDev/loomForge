@@ -17,6 +17,7 @@
     "@forge/bridge": "^6.3.1",
     "@forge/events": "^3.0.4",
     "@forge/kvs": "^2.0.4",
+    "@forge/llm": "^1.0.5",
     "@forge/resolver": "^2.0.0"
   },
   "devDependencies": {
