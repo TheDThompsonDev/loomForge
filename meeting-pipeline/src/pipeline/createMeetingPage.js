@@ -1,7 +1,7 @@
 const api = require("@forge/api");
 const { route } = api;
 
-async function createConfluencePage({ meeting, createdTickets, jobId }) {
+async function createMeetingPage({ meeting, tickets, jobId }) {
   const spaceKey = process.env.CONFLUENCE_SPACE_KEY;
   if (!spaceKey) {
     throw new Error("CONFLUENCE_SPACE_KEY not set (forge variables set CONFLUENCE_SPACE_KEY <key>)");
@@ -9,20 +9,20 @@ async function createConfluencePage({ meeting, createdTickets, jobId }) {
 
   const spaceId = await resolveSpaceId(spaceKey);
   const title = `${meeting.meetingTitle} (${meeting.date || new Date().toISOString().slice(0, 10)})`;
-  const payload = {
-    spaceId,
-    status: "current",
-    title,
-    body: {
-      representation: "storage",
-      value: renderStorageFormat({ meeting, createdTickets, jobId }),
-    },
-  };
 
+  // Queue consumers have no user. asApp() is the only option here.
   const response = await api.asApp().requestConfluence(route`/wiki/api/v2/pages`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      spaceId,
+      status: "current",
+      title,
+      body: {
+        representation: "storage",
+        value: renderMeetingStorage({ meeting, tickets, jobId }),
+      },
+    }),
   });
 
   if (!response.ok) {
@@ -60,38 +60,33 @@ function buildPageUrl(result) {
   return `/wiki${webui.startsWith("/") ? "" : "/"}${webui}`;
 }
 
-function renderStorageFormat({ meeting, createdTickets, jobId }) {
+function renderMeetingStorage({ meeting, tickets, jobId }) {
   const parts = [];
-
   parts.push(
-    `<ac:structured-macro ac:name="info"><ac:rich-text-body><p>` +
-      `Created by meeting-pipeline from <strong>${esc(meeting.meetingTitle)}</strong>` +
+    `<p>Meeting notes captured by meeting-pipeline` +
       `${meeting.date ? ` (${esc(meeting.date)})` : ""}` +
-      `${meeting.attendees?.length ? `, attendees: ${esc(meeting.attendees.join(", "))}` : ""}.` +
-      `</p></ac:rich-text-body></ac:structured-macro>`
+      `${meeting.attendees?.length ? `. Attendees: ${esc(meeting.attendees.join(", "))}` : ""}.` +
+      `</p>`
   );
-
-  parts.push(`<h2>Captured input</h2>`);
+  parts.push(`<h2>Notes</h2>`);
   parts.push(paragraphs(meeting.transcript));
-
-  if (createdTickets.length > 0) {
+  if (tickets.length > 0) {
     parts.push(`<h2>Tracked in Jira</h2><ul>`);
-    for (const t of createdTickets) {
+    for (const ticket of tickets) {
       parts.push(
         `<li><ac:structured-macro ac:name="jira">` +
-          `<ac:parameter ac:name="key">${esc(t.issueKey)}</ac:parameter>` +
-          `</ac:structured-macro> ${esc(t.summary || "")}</li>`
+          `<ac:parameter ac:name="key">${esc(ticket.issueKey)}</ac:parameter>` +
+          `</ac:structured-macro> ${esc(ticket.summary || "")}</li>`
       );
     }
     parts.push(`</ul>`);
   }
-
   parts.push(`<hr/><p><em>Pipeline job: ${esc(jobId)}</em></p>`);
   return parts.join("\n");
 }
 
 function paragraphs(text) {
-  return text
+  return String(text)
     .split(/\n\n+/)
     .map((p) => p.trim())
     .filter(Boolean)
@@ -107,4 +102,4 @@ function esc(text) {
     .replace(/"/g, "&quot;");
 }
 
-module.exports = { createConfluencePage, renderStorageFormat, buildPageUrl };
+module.exports = { createMeetingPage };

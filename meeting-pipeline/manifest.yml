@@ -10,6 +10,24 @@ modules:
       queue: pipeline-queue
       function: pipeline-worker
 
+  jira:globalPage:
+    - key: pipeline-home
+      title: Meeting Pipeline
+      resource: console-resource
+      resolver:
+        function: fn-page
+      route: meeting-pipeline
+
+  trigger:
+    - key: agent-handoff
+      function: on-agent-handoff
+      events:
+        - avi:jira:updated:issue
+        - avi:jira:assigned:issue
+      filter:
+        ignoreSelf: true
+        expression: event.issue.fields?.labels?.includes("assign-to-agent") == true
+
   function:
     - key: ingest-handler
       handler: index.handleIngest
@@ -18,48 +36,77 @@ modules:
       timeoutSeconds: 120
     - key: fn-submit-transcript
       handler: actions.submitTranscript
-    - key: action-get-job-status
+    - key: fn-get-job-status
       handler: actions.getJobStatus
+    - key: fn-load-context
+      handler: actions.loadResearchContext
+    - key: fn-publish-research
+      handler: actions.publishResearchDoc
+    - key: on-agent-handoff
+      handler: index.onAgentHandoff
+    - key: fn-page
+      handler: resolvers/page.handler
 
   rovo:agent:
     - key: meeting-pipeline-agent
       name: Meeting Pipeline
-      description: Captures an input, creates a Jira ticket, and can publish a
-        Confluence page so the work is tracked.
+      description: Turns a meeting into Jira work items. Agent-routed tickets
+        can be handed to this agent, Copilot, or another assignable agent.
       prompt: >
-        You operate the meeting-pipeline app. When given an input (a meeting
-        note, a research request, or similar), call submit-transcript to run
-        the pipeline. Offer the Confluence option when the user wants a page
-        written. Use get-job-status to report what a job created. Never claim
-        a ticket or page exists unless a tool result says so. Tickets land in
-        Review for human approval; always mention that.
+        You operate the meeting-pipeline app.
+
+        Capture: when given meeting notes, split them into concrete work
+        items. Set route to "agent" when the work is research, investigation,
+        or a recommendation. Set route to "human" when it is implementation
+        with a named owner. Pass items as a JSON array to submit-transcript.
+        Set generate_doc true if they also want a Confluence page of the notes.
+        Tickets land in Review. Always say which ones are assign-to-agent.
+        Use get-job-status only to report what a job created.
+
+        Work a ticket: you are one assignable agent, not the only one.
+        When asked to investigate a ticket, call load-research-context first.
+        If the user gives a source URL, pass it so the action can fetch that
+        page — that fetch is a Forge capability. Synthesize findings, risks,
+        and a recommendation. Never claim you fetched a URL unless the tool
+        result includes it. When asked to publish, call publish-research.
+        Never claim a page exists unless that tool result says so.
       conversationStarters:
-        - Capture this as a Jira ticket
-        - Process this and write a Confluence page
+        - Capture this meeting as Jira work items
+        - Research this agent-routed ticket and write it up
         - What did my last pipeline job create?
       actions:
         - submit-transcript
         - get-job-status
+        - load-research-context
+        - publish-research
+
   action:
     - key: submit-transcript
       function: fn-submit-transcript
       actionVerb: TRIGGER
       name: Submit captured input
       description: >
-        Send captured input into the pipeline. A Jira ticket is created and
-        stored on the job. Optionally also publishes a Confluence page.
-        Returns the pipeline job id.
+        Send a meeting into the pipeline. Creates one Jira ticket per work
+        item. Items with route "agent" are labeled assign-to-agent. Set
+        generate_doc to also write a Confluence page of the notes.
       inputs:
         transcript:
           title: Input
           type: string
           required: true
-          description: The captured text (meeting notes, research request, or similar).
+          description: The captured meeting notes.
         meeting_title:
           title: Title
           type: string
           required: true
-          description: Short title for the ticket.
+          description: Short title for the meeting.
+        items:
+          title: Work items
+          type: string
+          required: false
+          description: >
+            JSON array of {summary, detail, owner, route}. route is "human"
+            or "agent". Split the meeting into these items before calling.
         attendees:
           title: Attendees
           type: string
@@ -71,23 +118,79 @@ modules:
           required: false
           description: Date, ISO-8601.
         generate_doc:
-          title: Generate Confluence page
-          type: string
+          title: Write Confluence page
+          type: boolean
           required: false
-          description: Pass "true" to also publish a Confluence page.
+          description: >
+            If true, also write a Confluence page of the meeting notes with
+            live Jira cards for the tickets this job creates.
     - key: get-job-status
-      function: action-get-job-status
+      function: fn-get-job-status
       actionVerb: GET
       name: Get pipeline job status
       description: >
-        Check a pipeline job: current stage, the ticket created, and the
-        Confluence page if one was written.
+        Check a pipeline job: current stage, the tickets created, any
+        agent handoff, and any research page later published.
       inputs:
         job_id:
           title: Job id
           type: string
           required: true
           description: The job id returned by Submit captured input.
+    - key: load-research-context
+      function: fn-load-context
+      actionVerb: GET
+      name: Load research context
+      description: >
+        Read a Jira ticket as the current user and optionally fetch an
+        external https URL from the workshop allowlist. Use this before
+        writing findings. Does not publish anything.
+      inputs:
+        issue_key:
+          title: Issue key
+          type: string
+          required: true
+          description: Jira issue key to research, for example MEET-12.
+        source_url:
+          title: Source URL
+          type: string
+          required: false
+          description: >
+            Optional https URL to fetch as extra context. Allowed hosts are
+            developer.atlassian.com, support.atlassian.com, and Wikipedia.
+    - key: publish-research
+      function: fn-publish-research
+      actionVerb: CREATE
+      name: Publish research
+      description: >
+        Publish synthesized research to a Confluence page as the current
+        user, comment the page link on the Jira ticket, and remember the
+        page so a retry does not create a second one.
+      inputs:
+        issue_key:
+          title: Issue key
+          type: string
+          required: true
+          description: Jira issue key this write-up belongs to.
+        title:
+          title: Page title
+          type: string
+          required: true
+          description: Short title for the Confluence page.
+        findings:
+          title: Findings
+          type: string
+          required: true
+          description: The synthesized findings, risks, and recommendation.
+        source_url:
+          title: Source URL
+          type: string
+          required: false
+          description: Optional URL to cite on the page.
+
+resources:
+  - key: console-resource
+    path: static/console
 
 app:
   runtime:
@@ -99,7 +202,18 @@ app:
 permissions:
   scopes:
     - read:jira-work
-    - write:jira-work 
+    - write:jira-work
     - storage:app
     - read:space:confluence
     - write:page:confluence
+  external:
+    fetch:
+      backend:
+        - address: developer.atlassian.com
+          inScopeEUD: false
+        - address: support.atlassian.com
+          inScopeEUD: false
+        - address: en.wikipedia.org
+          inScopeEUD: false
+        - address: www.wikipedia.org
+          inScopeEUD: false

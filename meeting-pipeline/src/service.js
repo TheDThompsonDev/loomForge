@@ -11,10 +11,12 @@ async function createPipelineJob(payload) {
     meetingTitle: payload.meetingTitle,
     attendees: payload.attendees,
     date: payload.date,
-    generateDoc: Boolean(payload.generateDoc),
     transcript: payload.transcript,
+    items: payload.items,
+    generateDoc: Boolean(payload.generateDoc),
   });
-  
+
+  // Events are size-capped. The transcript lives in KVS; the queue carries a pointer.
   await pipelineQueue.push({ body: { jobId } });
   console.log(`[Ingest] job ${jobId} queued: "${payload.meetingTitle}"`);
   return { jobId };

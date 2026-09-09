@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Pipeline</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <h1>Meeting Pipeline</h1>
+      <p class="sub">
+        Paste meeting notes. The pipeline creates Jira tickets for human review.
+        Optionally it also writes those notes to a Confluence page, with the
+        tickets as live cards.
+      </p>
+    </header>
+
+    <section class="card">
+      <h2>New meeting</h2>
+      <form id="meeting-form" class="form">
+        <div class="row">
+          <div class="field">
+            <label for="f-title">Meeting title</label>
+            <input id="f-title" type="text" placeholder="Weekly platform sync" required>
+          </div>
+          <div class="field">
+            <label for="f-attendees">Attendees <span class="hint">(comma separated)</span></label>
+            <input id="f-attendees" type="text" placeholder="Danny, Sarah, Marcus">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-transcript">Meeting notes</label>
+          <textarea id="f-transcript" rows="10" placeholder="Paste the meeting notes or transcript here." required></textarea>
+        </div>
+        <label class="check">
+          <input id="f-doc" type="checkbox">
+          <span><strong>Also write a Confluence page from these notes.</strong>
+          The notes plus live Jira cards for the tickets this run creates.</span>
+        </label>
+        <div class="actions">
+          <button type="submit" id="f-submit" class="primary">Run the pipeline</button>
+          <button type="button" id="f-fixture" class="ghost">Load sample transcript</button>
+        </div>
+      </form>
+      <div id="form-err" class="err"></div>
+    </section>
+
+    <div id="timeline"></div>
+  </div>
+
+  <script src="bundle.js"></script>
+</body>
+</html>

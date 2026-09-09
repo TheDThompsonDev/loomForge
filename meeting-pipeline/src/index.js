@@ -1,21 +1,32 @@
-const { jsonResponse } = require("./utils");
+const { jsonResponse, header } = require("./utils");
 const { validateIngestPayload } = require("./ingestion/validate");
-const { createTickets } = require("./pipeline/createTickets");
-const { createConfluencePage } = require("./pipeline/createConfluencePage");
+const { createTicket } = require("./pipeline/createTicket");
+const { createMeetingPage } = require("./pipeline/createMeetingPage");
+const { onAgentHandoff } = require("./pipeline/onAgentHandoff");
 const { createPipelineJob } = require("./service");
 const storage = require("./storage");
 
 exports.handleIngest = async (request) => {
+  // Forge does not authenticate webtriggers. The URL is the secret.
+  // Set INGEST_TOKEN to require a matching X-Ingest-Token header.
+  const expected = process.env.INGEST_TOKEN;
+  if (expected && header(request, "x-ingest-token") !== expected) {
+    return jsonResponse(401, { error: "Unauthorized" });
+  }
+
   const validation = validateIngestPayload(request.body);
   if (!validation.ok) {
     return jsonResponse(400, { error: "Invalid payload", details: validation.errors });
   }
 
   const { jobId } = await createPipelineJob(validation.payload);
+  const agentCount = validation.payload.items.filter((item) => item.route === "agent").length;
   return jsonResponse(202, {
     status: "accepted",
     jobId,
-    message: "Input accepted. A Jira ticket will appear in Review shortly.",
+    itemCount: validation.payload.items.length,
+    agentItemCount: agentCount,
+    message: `${validation.payload.items.length} work item(s) accepted. Tickets will appear in Review. ${agentCount} labeled assign-to-agent.`,
   });
 };
 
@@ -33,7 +44,9 @@ exports.processPipelineJob = async (event) => {
     date: job.date,
     transcript: job.transcript,
   };
+  const items = job.items || [];
   const checkpoint = job.checkpoint || {};
+  checkpoint.createdKeys = checkpoint.createdKeys || {};
 
   let phase = job.status;
   const save = (status, extra = {}) => {
@@ -49,42 +62,43 @@ exports.processPipelineJob = async (event) => {
   };
 
   try {
-    checkpoint.createdKeys = checkpoint.createdKeys || {};
     await save("creating-tickets");
-    const { created, failed } = await createTickets({
-      meeting,
-      jobId,
-      alreadyCreated: checkpoint.createdKeys,
-      onCreated: async (index, issueKey) => {
-        checkpoint.createdKeys[index] = issueKey;
-        await save("creating-tickets");
-      },
-    });
+    const tickets = [];
+    for (let index = 0; index < items.length; index += 1) {
+      const ticket = await createTicket({
+        meeting,
+        item: items[index],
+        jobId,
+        alreadyCreated: checkpoint.createdKeys[index],
+      });
+      checkpoint.createdKeys[index] = ticket.issueKey;
+      tickets.push(ticket);
+      await save("creating-tickets");
+    }
 
     if (job.generateDoc && !checkpoint.confluencePage) {
       await save("writing-doc");
       try {
-        checkpoint.confluencePage = await createConfluencePage({
+        checkpoint.confluencePage = await createMeetingPage({
           meeting,
-          createdTickets: created,
+          tickets,
           jobId,
         });
         await save("writing-doc");
       } catch (error) {
-        console.error(`[Pipeline] Confluence page failed (ticket unaffected):`, error.message);
+        console.error(`[Pipeline] Confluence page failed (tickets unaffected):`, error.message);
         checkpoint.docError = error.message;
       }
     }
 
     await save("done", {
       result: {
-        created,
-        failed,
+        tickets,
         confluencePage: checkpoint.confluencePage || null,
         docError: checkpoint.docError || null,
       },
     });
-    console.log(`[Pipeline] job ${jobId} done: ${created.length} ticket(s) created`);
+    console.log(`[Pipeline] job ${jobId} done: ${tickets.map((t) => t.issueKey).join(", ")}`);
   } catch (error) {
     console.error(`[Pipeline] job ${jobId} failed:`, error);
     await storage.saveJob(jobId, {
@@ -97,3 +111,5 @@ exports.processPipelineJob = async (event) => {
     throw error;
   }
 };
+
+exports.onAgentHandoff = onAgentHandoff;

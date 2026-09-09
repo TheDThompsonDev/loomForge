@@ -1,8 +1,12 @@
 {
   "name": "meeting-pipeline",
   "version": "1.0.0",
-  "description": "Workshop app: capture an input, create a Jira ticket, optionally write a Confluence page.",
+  "description": "Workshop app: capture an input, create a Jira ticket, research it with a Forge Rovo agent, publish Confluence.",
   "main": "index.js",
+  "scripts": {
+    "check": "node scripts/check.js",
+    "build:ui": "node scripts/build-ui.js"
+  },
   "license": "MIT",
   "private": true,
   "engines": {
@@ -10,7 +14,12 @@
   },
   "dependencies": {
     "@forge/api": "^8.0.4",
+    "@forge/bridge": "^6.3.1",
     "@forge/events": "^3.0.4",
-    "@forge/kvs": "^2.0.4"
+    "@forge/kvs": "^2.0.4",
+    "@forge/resolver": "^2.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

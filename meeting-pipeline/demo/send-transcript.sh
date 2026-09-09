@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Post captured input to the pipeline web trigger.
+# Post a meeting plus work items to the pipeline web trigger.
 #   PIPELINE_WEBTRIGGER_URL=https://... \
 #     ./send-transcript.sh ../fixtures/real-meeting.txt "Weekly platform sync"
 set -euo pipefail
 
-FILE="${1:?usage: send-transcript.sh <input-file> [title] [generate_doc:true|false]}"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+FILE="${1:?usage: send-transcript.sh <input-file> [title] [items-json]}"
 TITLE="${2:-$(basename "$FILE" .txt)}"
-GENERATE_DOC="${3:-false}"
+ITEMS_FILE="${3:-$ROOT/fixtures/work-items.json}"
 
 : "${PIPELINE_WEBTRIGGER_URL:?set PIPELINE_WEBTRIGGER_URL (forge webtrigger to print it)}"
 
@@ -14,9 +15,15 @@ BODY=$(jq -n \
   --rawfile transcript "$FILE" \
   --arg title "$TITLE" \
   --arg date "$(date +%Y-%m-%d)" \
-  --argjson doc "$GENERATE_DOC" \
-  '{transcript: $transcript, meeting_title: $title, attendees: ["Danny", "Sarah", "Marcus", "Priya", "Jake", "Alex", "Sam"], date: $date, generate_doc: $doc}')
+  --slurpfile items "$ITEMS_FILE" \
+  '{transcript: $transcript, meeting_title: $title, attendees: ["Danny", "Sarah", "Marcus", "Priya", "Jake", "Alex", "Sam"], date: $date, items: $items[0]}')
 
-curl -sS -X POST "$PIPELINE_WEBTRIGGER_URL" \
-  -H "Content-Type: application/json" \
-  --data-binary "$BODY" | jq .
+CURL_ARGS=(
+  -sS -X POST "$PIPELINE_WEBTRIGGER_URL"
+  -H "Content-Type: application/json"
+)
+if [[ -n "${INGEST_TOKEN:-}" ]]; then
+  CURL_ARGS+=(-H "X-Ingest-Token: ${INGEST_TOKEN}")
+fi
+
+curl "${CURL_ARGS[@]}" --data-binary "$BODY" | jq .

@@ -1,0 +1,32 @@
+[
+  {
+    "summary": "Cache tax rates per region",
+    "detail": "Sarah. Checkout p95 is 4.2s from the synchronous tax vendor call. Cache rates per region. In review by Friday.",
+    "owner": "Sarah",
+    "route": "human"
+  },
+  {
+    "summary": "Research tax vendor per-call pricing",
+    "detail": "Parked procurement question from the weekly sync. Paying per-call and hammering the vendor. Needs findings, risks, and a recommendation.",
+    "owner": "",
+    "route": "agent"
+  },
+  {
+    "summary": "Hotfix Android 13 rotation crash",
+    "detail": "Marcus. Cherry-pick off the 4.1 tag, not release-4.2. Saved instance state is cleared by the new navigation library. Ship after QA.",
+    "owner": "Marcus",
+    "route": "human"
+  },
+  {
+    "summary": "Pair on Android push registration",
+    "detail": "Priya + Jake next week. iOS push migration is done; Android registration is half done.",
+    "owner": "Priya",
+    "route": "human"
+  },
+  {
+    "summary": "Recommend notification rate-limit approach",
+    "detail": "Four marketing pushes in one hour; opt-outs doubled. Priya will build a scoped server-side cap. Danny thinks it treats a symptom. Agent should recommend whether that is enough.",
+    "owner": "Priya",
+    "route": "agent"
+  }
+]

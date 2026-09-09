@@ -1,12 +1,10 @@
-# Post captured input to the pipeline web trigger (Windows twin of
-# send-transcript.sh).
+# Post a meeting plus work items to the pipeline web trigger.
 #   $env:PIPELINE_WEBTRIGGER_URL="https://..."
 #   .\send-transcript.ps1 ..\fixtures\real-meeting.txt "Weekly platform sync"
-#   .\send-transcript.ps1 ..\fixtures\real-meeting.txt -GenerateDoc
 param(
     [Parameter(Mandatory = $true)][string]$TranscriptFile,
     [string]$Title,
-    [switch]$GenerateDoc
+    [string]$ItemsFile
 )
 
 $ErrorActionPreference = "Stop"
@@ -14,18 +12,23 @@ $ErrorActionPreference = "Stop"
 $url = $env:PIPELINE_WEBTRIGGER_URL
 if (-not $url) { throw "Set PIPELINE_WEBTRIGGER_URL (run: forge webtrigger)" }
 
+$root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 if (-not $Title) { $Title = [IO.Path]::GetFileNameWithoutExtension($TranscriptFile) }
+if (-not $ItemsFile) { $ItemsFile = Join-Path $root "fixtures\work-items.json" }
 
 $transcript = Get-Content -Raw -Encoding UTF8 $TranscriptFile
+$items = Get-Content -Raw -Encoding UTF8 $ItemsFile | ConvertFrom-Json
 $body = @{
     transcript    = $transcript
     meeting_title = $Title
     attendees     = @("Danny", "Sarah", "Marcus", "Priya", "Jake", "Alex", "Sam")
     date          = (Get-Date -Format "yyyy-MM-dd")
-    generate_doc  = [bool]$GenerateDoc
-} | ConvertTo-Json -Depth 4
+    items         = @($items)
+} | ConvertTo-Json -Depth 6
 
-$response = Invoke-RestMethod -Method Post -Uri $url -Body $body `
-    -ContentType "application/json"
+$headers = @{ "Content-Type" = "application/json" }
+if ($env:INGEST_TOKEN) { $headers["X-Ingest-Token"] = $env:INGEST_TOKEN }
+
+$response = Invoke-RestMethod -Method Post -Uri $url -Body $body -Headers $headers
 
 $response | ConvertTo-Json -Depth 6
