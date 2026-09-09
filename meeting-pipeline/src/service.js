@@ -16,7 +16,6 @@ async function createPipelineJob(payload) {
     generateDoc: Boolean(payload.generateDoc),
   });
 
-  // Events are size-capped. The transcript lives in KVS; the queue carries a pointer.
   await pipelineQueue.push({ body: { jobId } });
   console.log(`[Ingest] job ${jobId} queued: "${payload.meetingTitle}"`);
   return { jobId };

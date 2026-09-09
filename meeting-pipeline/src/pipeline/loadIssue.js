@@ -3,7 +3,6 @@ const { route } = api;
 const { adfToText } = require("../utils");
 
 async function loadIssue(issueKey) {
-  // Agent actions run as the person in the chat. asUser() keeps their permissions.
   const response = await api.asUser().requestJira(
     route`/rest/api/3/issue/${issueKey}?fields=summary,description,status,labels`
   );

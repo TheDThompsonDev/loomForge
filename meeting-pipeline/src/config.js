@@ -26,8 +26,6 @@ const STORE = {
 
 const AGENT_HANDOFF_STATUS = "Approved for Agent";
 
-// Domains this app is allowed to fetch. Each one must also appear in
-// permissions.external.fetch.backend — Forge rejects undeclared hosts.
 const FETCH_HOSTS = [
   "developer.atlassian.com",
   "support.atlassian.com",

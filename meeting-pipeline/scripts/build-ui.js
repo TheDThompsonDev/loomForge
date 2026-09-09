@@ -1,6 +1,3 @@
-// Builds the Custom UI console: bundles src/console/main.js (+ @forge/bridge)
-// into static/console/, alongside the html and css. Run before forge deploy:
-//   npm run build:ui
 const esbuild = require("esbuild");
 const fs = require("node:fs");
 const path = require("node:path");

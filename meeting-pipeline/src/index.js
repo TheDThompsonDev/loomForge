@@ -2,13 +2,12 @@ const { jsonResponse, header } = require("./utils");
 const { validateIngestPayload } = require("./ingestion/validate");
 const { createTicket } = require("./pipeline/createTicket");
 const { createMeetingPage } = require("./pipeline/createMeetingPage");
+const { commentIssue } = require("./pipeline/commentIssue");
 const { onAgentHandoff } = require("./pipeline/onAgentHandoff");
 const { createPipelineJob } = require("./service");
 const storage = require("./storage");
 
 exports.handleIngest = async (request) => {
-  // Forge does not authenticate webtriggers. The URL is the secret.
-  // Set INGEST_TOKEN to require a matching X-Ingest-Token header.
   const expected = process.env.INGEST_TOKEN;
   if (expected && header(request, "x-ingest-token") !== expected) {
     return jsonResponse(401, { error: "Unauthorized" });
@@ -81,9 +80,11 @@ exports.processPipelineJob = async (event) => {
       try {
         checkpoint.confluencePage = await createMeetingPage({
           meeting,
+          items,
           tickets,
           jobId,
         });
+        await commentPageOnTickets(tickets, checkpoint.confluencePage);
         await save("writing-doc");
       } catch (error) {
         console.error(`[Pipeline] Confluence page failed (tickets unaffected):`, error.message);
@@ -111,5 +112,20 @@ exports.processPipelineJob = async (event) => {
     throw error;
   }
 };
+
+async function commentPageOnTickets(tickets, page) {
+  if (!page?.pageUrl) return;
+  for (const ticket of tickets) {
+    if (!ticket.issueKey) continue;
+    await commentIssue({
+      issueKey: ticket.issueKey,
+      asUser: false,
+      lines: [
+        { prefix: "Meeting notes published: ", text: page.title, strong: true },
+        { link: page.pageUrl },
+      ],
+    });
+  }
+}
 
 exports.onAgentHandoff = onAgentHandoff;

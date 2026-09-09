@@ -51,8 +51,6 @@ async function fetchSource(rawUrl) {
   const parsed = parseAllowedUrl(rawUrl);
   if (!parsed.ok) return parsed;
 
-  // Studio-built agents cannot declare egress. This fetch is the Forge extra:
-  // the host must be listed in permissions.external.fetch.backend or Forge returns 403.
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), LIMITS.SOURCE_TIMEOUT_MS);
 

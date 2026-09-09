@@ -26,8 +26,6 @@ async function onAgentHandoff(event) {
     return;
   }
 
-  // The ticket is now a job. This app does not pick the agent —
-  // Meeting Pipeline, Copilot, or any assignable agent can take it.
   await commentIssue({
     issueKey,
     asUser: false,

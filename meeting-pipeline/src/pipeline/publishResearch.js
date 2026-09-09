@@ -20,8 +20,6 @@ async function publishResearch({ issueKey, title, findings, sourceUrl }) {
   const spaceId = await resolveSpaceId(spaceKey);
   const pageTitle = `${title} (${issueKey})`;
 
-  // Same API as a queue worker would use, but asUser(): the page is created
-  // as the person who asked the agent, under their Confluence permissions.
   const response = await api.asUser().requestConfluence(route`/wiki/api/v2/pages`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -45,7 +43,6 @@ async function publishResearch({ issueKey, title, findings, sourceUrl }) {
   const pageUrl = buildPageUrl(result);
   const record = { issueKey, pageId: result.id, pageUrl, title: pageTitle };
 
-  // Persist before the comment so a retry after this point returns the same page.
   await storage.saveResearch(issueKey, record);
   await commentIssue({
     issueKey,

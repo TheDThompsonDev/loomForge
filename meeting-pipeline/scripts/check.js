@@ -2,6 +2,8 @@ const assert = require("assert");
 const { validateIngestPayload } = require("../src/ingestion/validate");
 const { parseIssueKey, adfToText, truncate } = require("../src/utils");
 const { parseAllowedUrl } = require("../src/pipeline/fetchSource");
+const { composePlanOfRecord, renderPlanOfRecord } = require("../src/pipeline/planOfRecord");
+const sampleItems = require("../fixtures/work-items.json");
 
 function check(name, fn) {
   try {
@@ -94,6 +96,31 @@ check("allowlists egress hosts", () => {
 
 check("truncates with ellipsis", () => {
   assert.strictEqual(truncate("abcdef", 5), "ab...");
+});
+
+check("composes a plan-of-record page from work items", () => {
+  const meeting = {
+    meetingTitle: "Weekly platform sync",
+    attendees: ["Danny", "Sarah"],
+    date: "2026-09-08",
+    transcript: "Sarah takes tax caching. Marcus hotfixes Android.",
+  };
+  const tickets = sampleItems.map((item, i) => ({
+    issueKey: `SMS-${120 + i}`,
+    summary: item.summary,
+    route: item.route,
+  }));
+  const doc = composePlanOfRecord({ meeting, items: sampleItems, tickets });
+  assert.match(doc.title, /plan of record/);
+  assert.ok(doc.decisions.length >= 5);
+  assert.ok(doc.risks.length >= 1);
+  const html = renderPlanOfRecord({ doc, meeting, tickets, jobId: "job-test" });
+  assert.ok(html.includes("Executive summary"));
+  assert.ok(html.includes("Decisions"));
+  assert.ok(html.includes("Action plan"));
+  assert.ok(html.includes("Risks"));
+  assert.ok(html.includes("ac:name=\"jira\""));
+  assert.ok(html.includes("SMS-120"));
 });
 
 console.log("\nAll checks passed.");

@@ -87,7 +87,7 @@ Two writes, two principals.
 
 | Where | What it teaches |
 |---|---|
-| [src/pipeline/createMeetingPage.js](../src/pipeline/createMeetingPage.js) | Optional ingest-time page: the notes plus live `jira` macros. `asApp`, from the queue. |
+| [src/pipeline/createMeetingPage.js](../src/pipeline/createMeetingPage.js) and [src/pipeline/planOfRecord.js](../src/pipeline/planOfRecord.js) | Optional ingest-time plan of record: summary, decisions, action plan with live `jira` macros, risks. `asApp`, from the queue. |
 | [src/pipeline/publishResearch.js](../src/pipeline/publishResearch.js) | Later research write-up. `asUser`, from the agent action. |
 
 ## Suggested workshop flow

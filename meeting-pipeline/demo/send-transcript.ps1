@@ -1,6 +1,3 @@
-# Post a meeting plus work items to the pipeline web trigger.
-#   $env:PIPELINE_WEBTRIGGER_URL="https://..."
-#   .\send-transcript.ps1 ..\fixtures\real-meeting.txt "Weekly platform sync"
 param(
     [Parameter(Mandatory = $true)][string]$TranscriptFile,
     [string]$Title,

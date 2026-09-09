@@ -1,11 +1,9 @@
-// Meeting Pipeline console, Custom UI. Submits a meeting, then polls the
-// job and animates the pipeline timeline as each stage completes.
 import { invoke, router } from "@forge/bridge";
 
 const STAGES = [
   { key: "queued", name: "Queued", detail: "Job accepted, waiting for a worker (async events queue)" },
   { key: "creating-tickets", name: "Create Jira tickets", detail: "requestJira() puts tickets in the Review column for human approval" },
-  { key: "writing-doc", name: "Write Confluence page", detail: "requestConfluence() publishes the notes with live Jira cards" },
+  { key: "writing-doc", name: "Write Confluence page", detail: "requestConfluence() publishes the plan of record with live Jira cards" },
   { key: "done", name: "Done", detail: "" },
 ];
 
@@ -75,9 +73,7 @@ function watchJob(jobId, generateDoc) {
       if (result.job.status === "done" || result.job.status === "failed") {
         clearInterval(pollTimer);
       }
-    } catch {
-      /* transient poll errors: keep trying */
-    }
+    } catch {}
   }, 2000);
 }
 
@@ -108,13 +104,16 @@ function renderTimeline(job, jobId) {
       }
       if (stage.key === "writing-doc") {
         if (job.confluencePage?.pageUrl) {
-          detail = `Published: <a href="${esc(job.confluencePage.pageUrl)}" target="_blank" rel="noreferrer">${esc(job.confluencePage.title)}</a>`;
+          detail = `Published: <a class="page-link" data-href="${esc(job.confluencePage.pageUrl)}">${esc(job.confluencePage.title)}</a>`;
         } else if (job.docError) {
           detail = `<div class="warn-summary">Doc failed (tickets unaffected): ${esc(job.docError)}</div>`;
         }
       }
       if (stage.key === "done" && job.status === "done") {
-        detail = `<div class="done-summary">${tickets.length} ticket(s) in Review${job.confluencePage ? ", Confluence page published" : ""}.</div>`;
+        const pageBit = job.confluencePage?.pageUrl
+          ? ` <a class="page-link" data-href="${esc(job.confluencePage.pageUrl)}">${esc(job.confluencePage.title)}</a>`
+          : "";
+        detail = `<div class="done-summary">${tickets.length} ticket(s) in Review.${pageBit}</div>`;
       }
       if (failed && state === "failed") detail = esc(job.error || "Failed. See forge logs for details.");
 
@@ -130,15 +129,25 @@ function renderTimeline(job, jobId) {
   bindTicketLinks(document.getElementById("timeline"));
 }
 
+function openProductUrl(path) {
+  try {
+    router.open(path);
+  } catch {
+    window.open(path, "_blank");
+  }
+}
+
 function bindTicketLinks(root) {
   root.querySelectorAll(".ticket-link[data-key]").forEach((el) => {
     el.addEventListener("click", (event) => {
       event.preventDefault();
-      try {
-        router.open(`/browse/${el.dataset.key}`);
-      } catch {
-        window.open(`/browse/${el.dataset.key}`, "_blank");
-      }
+      openProductUrl(`/browse/${el.dataset.key}`);
+    });
+  });
+  root.querySelectorAll(".page-link[data-href]").forEach((el) => {
+    el.addEventListener("click", (event) => {
+      event.preventDefault();
+      openProductUrl(el.dataset.href);
     });
   });
 }

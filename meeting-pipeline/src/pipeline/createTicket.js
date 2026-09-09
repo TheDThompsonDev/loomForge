@@ -30,7 +30,6 @@ async function createTicket({ meeting, item, jobId, alreadyCreated }) {
     },
   };
 
-  // Queue consumers have no user. asApp() is the only option here.
   const response = await api.asApp().requestJira(route`/rest/api/3/issue`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Post a meeting plus work items to the pipeline web trigger.
-#   PIPELINE_WEBTRIGGER_URL=https://... \
-#     ./send-transcript.sh ../fixtures/real-meeting.txt "Weekly platform sync"
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
